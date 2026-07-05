@@ -1,0 +1,331 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" >
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <title> Cuisine </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<style>
+ 
+    </style>
+<body>
+    <!-- =============== Navigation ================ -->
+    
+    <div class="In">
+        <div class="navigation active">
+            <ul>
+                <br><br><br>
+                <li>
+                  <a href="{% url 'main' %}">
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Commande' %}">
+                        <span class="icon"><ion-icon name="cart"></ion-icon></span>
+                        <span class="title">Commande</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Cuisine' %}">
+                        <span class="icon"><ion-icon name="bag-handle-outline"></ion-icon></span>
+                        <span class="title">Cuisine</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Element' %}">
+                        <span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+                        <span class="title">Element</span>
+                    </a>
+                </li>
+                <li>
+                  <a href="{% url 'composant' %}">
+                    <span class="icon"><ion-icon name="apps-outline"></ion-icon></span>
+                    <span class="title">Composant</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'SignOut' %}">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+      
+        <div class="main active">
+            <br><br><br>
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+                <div class="search">
+                    <label>
+                        
+                    </label>
+                </div>
+                <div class="user">
+                    <img src="{% static 'img/logoKitchen.jpg' %}" alt="">
+                </div>
+            </div>
+
+                <div class="cardBox">
+                    <div class="card">
+                        <div>
+                        <div class="numbers">{{NembreCommande}}</div>
+                            <div class="cardName">Nombre de Commande</div>
+                        </div>
+                        <div class="iconBx">
+                            <ion-icon name="file-tray-full-outline"></ion-icon>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+            <div class="m-auto w-75">
+                <div class="recentOrders">
+                    <div class="cardHeader d-flex justify-content-between">
+                        <h2>Les Commandes</h2>     
+                        <button type="button" class="btn btn-primary h4" data-toggle="modal" data-target="#CommandeForm">
+                            <ion-icon class="h2 m-auto" name="add-circle-outline"></ion-icon>
+                        </button>                               
+                    </div>
+                    <table id="Commandes" class="tableElement table">
+                          <thead>
+                              <tr>
+                                  <th>référence</th>
+                                  <th>Client</th>
+                                  <th>Date</th>
+                                  <th>Prix</th>
+                                  <th>Prix Paye</th>
+                                  <th>reste paiment</th>
+                                  <th>la Cuisine</th>
+                                  <th></th>
+                              </tr>
+                          </thead>   
+                        <tbody>
+                            {%for c in Commandes%}
+                            <tr>
+                                <td class="NomCompTable">{{c.id}}</td>
+                               <td class="NomCompTable">{{c.Nom_Client}} {{c.prenom_Client}}</td>
+                               <td>{{ c.Date_comm }}</td>
+                                <td>{{c.Prix_commande}}</td>
+                                <td>{{c.Prix_Paye}}</td>
+                                <td>{{ c.resttopaye }}</td>
+                                <td>{{ c.Cuisine.Nom }}</td>
+                                <td class="tablefnc">
+                                <a class="LinkCommande" href="{% url 'Commande' c.id %}"><ion-icon name="pencil-outline"></ion-icon></a>
+                                <a class="LinkCommande" href="{% url 'CommandeD' c.id %}"><ion-icon name="trash-outline"></ion-icon></a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        </tbody> 
+                    </table> 
+                </div>
+            </div>
+
+            {% if selectedCommande %}
+            <div class="modal fade" id="EditCommandeForm"data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="CommandeFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="addCommandeForm">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">modifier Commande</h5>
+                          <a href="{% url 'Commande' %}"><ion-icon class="h4 text-light" name="close-outline"></ion-icon></a>
+                        </div>
+                        {% csrf_token %}
+                        <h4 class="m-auto">Information de Client</h4>
+                        <p>
+                            <label for="{{ selectedCommande.Nom_Client.id_for_label }}">Nom Client:</label>
+                            {{ selectedCommande.Nom_Client }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.prenom_Client.id_for_label }}">Prénom Client:</label>
+                            {{ selectedCommande.prenom_Client }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.Num_tele.id_for_label }}">Numéro de Téléphone:</label>
+                            {{ selectedCommande.Num_tele }}
+                        </p>
+                        <h4 class="m-auto">Cuisine</h4>
+                        <p class="d-block text-center">
+                            <label for="{{ selectedCommande.Cuisine.id_for_label }}">:</label>
+                            <input type="text" class="" id="cuisineSearch" placeholder="Search Cuisine">
+                            {{ selectedCommande.Cuisine }}
+                        </p>
+                        <h4 class="m-auto">Paiments</h4>
+                        <p>
+                            <label for="{{ selectedCommande.Prix_Transport.id_for_label }}">Prix de la Transport:</label>
+                            {{ selectedCommande.Prix_Transport }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.Prix_commande.id_for_label }}">Prix de la Commande:</label>
+                            {{ selectedCommande.Prix_commande }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.Prix_Paye.id_for_label }}">Prix Payé:</label>
+                            {{ selectedCommande.Prix_Paye }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.Date_comm.id_for_label }}">Date de la Commande:</label>
+                            {{ selectedCommande.Date_comm }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.Mode_paiment.id_for_label }}">Mode de Paiement:</label>
+                            {{ selectedCommande.Mode_paiment }}
+                        </p>
+                        <p>
+                            <label for="{{ selectedCommande.deliver.id_for_label }}">Livrer:</label>
+                            {{ selectedCommande.deliver }}
+                        </p>
+                        <div class="modal-footer">
+                            <a href="{% url 'Commande' %}" class="Formbtn m-2" >
+                                Cancel
+                            </a>
+                          <button class="Formbtn" type="submit">Modifier</button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+            {% if Msg %}
+                    <script>
+                        $(document).ready(alert("{{Msg}}"));
+                    </script>
+            {%endif%}
+            <script type="text/javascript">
+                $(window).on('load', function() {
+                    $('#EditCommandeForm').modal('show');
+                });
+            </script>
+
+            {% elif DeletedInst %}
+            <div class="modal fade" id="DeleteCommandeForm"data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="CommandeFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="addCommandeForm">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un Commande</h5>
+                        </div>
+                        <span class="h5 m-4">ete vous sur vous voulez supprime <span class="selectedtext">{{DeletedInst.id}}</span>?</span>
+                        <div class="d-flex">
+                            <a href="{% url 'Commande' %}" class="Formbtn m-2" >
+                                Cancel
+                            </a>
+                            <button type="submit" class="Formbtn m-2">
+                                Oui
+                            </button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(window).on('load', function() {
+                    $('#DeleteCommandeForm').modal('show');
+                });
+            </script>
+            {% else %}
+            <div class="modal fade" id="CommandeForm" tabindex="-1" role="dialog" aria-labelledby="CommandeFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="addCommandeForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un Commande</h5>
+                            <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                                <ion-icon class="h4 text-light" name="close-outline"></ion-icon>
+                            </button>
+                        </div>
+                        {% csrf_token %}
+                        <h4 class="m-auto">Information de Client</h4>
+                        <p>
+                            <label for="{{ formCommande.Nom_Client.id_for_label }}">Nom Client:</label>
+                            {{ formCommande.Nom_Client }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.prenom_Client.id_for_label }}">Prénom Client:</label>
+                            {{ formCommande.prenom_Client }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.Num_tele.id_for_label }}">Numéro de Téléphone:</label>
+                            {{ formCommande.Num_tele }}
+                        </p>
+                        <h4 class="m-auto">Cuisine</h4>
+                        <p class="d-block text-center">
+                            <label for="{{ formCommande.Cuisine.id_for_label }}">:</label>
+                            <input type="text" class="" id="cuisineSearch" placeholder="Search Cuisine">
+                            {{ formCommande.Cuisine }}
+                        </p>
+                        <h4 class="m-auto">Paiments</h4>
+                        <p>
+                            <label for="{{ formCommande.Prix_Transport.id_for_label }}">Prix de la Transport:</label>
+                            {{ formCommande.Prix_Transport }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.Prix_commande.id_for_label }}">Prix de la Commande:</label>
+                            {{ formCommande.Prix_commande }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.Prix_Paye.id_for_label }}">Prix Payé:</label>
+                            {{ formCommande.Prix_Paye }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.Date_comm.id_for_label }}">Date de la Commande:</label>
+                            {{ formCommande.Date_comm }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.Mode_paiment.id_for_label }}">Mode de Paiement:</label>
+                            {{ formCommande.Mode_paiment }}
+                        </p>
+                        <p>
+                            <label for="{{ formCommande.deliver.id_for_label }}">Livrer:</label>
+                            {{ formCommande.deliver }}
+                        </p>
+                        <div class="modal-footer">
+                            <button class="Formbtn" type="submit">Ajouter</button>
+                        </div>
+                    </form>                    
+                </div>
+            </div>
+        {% endif %}
+	<script src="{% static 'js/Commande.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+<script>
+    // add hovered class to selected list item
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("mouseover", activeLink));
+
+// Menu Toggle
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+$(document).ready(function () {
+    $('#Commandes').DataTable();
+    $('#ttt').DataTable();
+});
+
+    </script>
+</html>

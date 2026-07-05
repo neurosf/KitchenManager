@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" >
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"</script>
+    <title> Cuisine </title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<style>
+ 
+    </style>
+<body>
+    <!-- =============== Navigation ================ -->
+    
+    <div class="container">
+        <div class="navigation active">
+            <ul>
+                <br><br><br>
+                <li>
+                  <a href="{% url 'main' %}">
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Commande' %}">
+                        <span class="icon"><ion-icon name="cart"></ion-icon></span>
+                        <span class="title">Commande</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Cuisine' %}">
+                        <span class="icon"><ion-icon name="bag-handle-outline"></ion-icon></span>
+                        <span class="title">Cuisine</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Element' %}">
+                        <span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+                        <span class="title">Element</span>
+                    </a>
+                </li>
+                <li>
+                  <a href="{% url 'composant' %}">
+                    <span class="icon"><ion-icon name="apps-outline"></ion-icon></span>
+                    <span class="title">Composant</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'SignOut' %}">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+      
+        <!-- ========================= Main ==================== -->
+        <div class="main active">
+            <br><br><br>
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search">
+                    <label>
+                        
+                    </label>
+                </div>
+
+                <div class="user">
+                    <img src="{% static 'img/logoKitchen.jpg' %}" alt="">
+                </div>
+            </div>
+
+            <!-- ======================= Cards ================== -->
+            <div class="cardBox">
+                <div class="card">
+                    <div>
+                        <!--<div class="numbers">80</div>-->
+                        <div class="numbers">{{countachat}}</div>
+                        <div class="cardName">Achats</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="cart-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <!--<div class="numbers">284</div>-->
+                        <div class="numbers">{{countclient}}</div>
+                        <div class="cardName">Clients</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="people-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                       <!--<div class="numbers">$7,842</div>--> 
+                       <div class="numbers">{{Revenue}}</div>
+                        <div class="cardName">Revenus</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="cash-outline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="recentCustomers">
+                <div class="cardHeader">
+                    <h2>Revenus/Benefice</h2>
+                </div>
+                <div style="width: 330px;">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div> 
+          </div>   
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                var countpanier = "{{countpanier}}";
+                var countclient = "{{countclient}}";
+                var benefice="{{benefice}}";
+                var RevenueTT="{{RevenueTT}}";
+
+            
+                const ctx = document.getElementById('myChart');
+                
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                    labels: ['Revenue', 'Benefice'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [ RevenueTT, benefice],
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                    scales: {
+                        y: {
+                        beginAtZero: true
+                        }
+                    }
+                    }
+                });
+                </script>
+    <!-- =========== Scripts =========  -->
+    <script src="assets/js/main.js"></script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+<script>
+  let list_prd=[]
+  closeForm()
+function openForm(prds) {
+  list_prd=prds;
+  list_prd.forEach((p)=>addRow(p[0],p[1],p[2]))
+  console.log(list_prd)
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+
+function addRow(name,qte,prix) {
+      // Get the table body element in which you want to add row
+      let table = document.getElementById("ttt");
+   
+      // Create row element
+      let row = table.insertRow(-1); // We are adding at the end
+   
+      // Create table cells
+      let c1 = row.insertCell(0);
+      let c2 = row.insertCell(1);
+      let c3 = row.insertCell(2);
+  
+      
+      // Insert data to cells
+      c1.innerText = name
+      c2.innerText = qte
+      c3.innerText = prix
+  
+      
+   }
+
+</script>
+<script>
+    // add hovered class to selected list item
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("mouseover", activeLink));
+
+// Menu Toggle
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+$(document).ready(function () {
+    $('#example').DataTable();
+    $('#ttt').DataTable();
+});
+
+    </script>
+</html>

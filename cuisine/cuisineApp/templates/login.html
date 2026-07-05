@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  {% load static %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="{% static 'css/Login.css' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<form method="POST" action="">
+	{% csrf_token %}
+	<div class="svgContainer">
+		<div>
+			<img class="ImgLogo" src="{% static 'img/logoKitchen.jpg' %}" />
+		</div>
+	</div>
+	
+	<div class="inputGroup inputGroup1">
+		<label for="loginEmail" id="loginEmailLabel">Username</label>
+		<input type="text" id="loginUsername"  value="{{user}}" name="username" maxlength="254" />
+	</div>
+	<div class="inputGroup inputGroup2">
+		<label for="loginPassword" id="loginPasswordLabel">Password</label>
+		<input type="password" id="loginPassword"  value="{{password}}" name="password"/>
+		<label id="showPasswordToggle" for="showPasswordCheck">Show
+			<input id="showPasswordCheck" type="checkbox"/>
+			<div class="indicator"></div>
+		</label>
+	</div>
+	<div class="inputGroup">
+		<label class="">{{message}}</label>
+	</div>
+	<div class="inputGroup inputGroup3">
+		<button id="login">Log in</button>
+	</div>	
+</form>
+	<script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>

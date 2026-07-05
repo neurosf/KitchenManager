@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" >
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <title> Cuisine </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<style>
+ 
+    </style>
+<body>
+    <!-- =============== Navigation ================ -->
+    
+    <div class="In">
+        <div class="navigation active">
+            <ul>
+                <br><br><br>
+                <li>
+                  <a href="{% url 'main' %}">
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Commande' %}">
+                        <span class="icon"><ion-icon name="cart"></ion-icon></span>
+                        <span class="title">Commande</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Cuisine' %}">
+                        <span class="icon"><ion-icon name="bag-handle-outline"></ion-icon></span>
+                        <span class="title">Cuisine</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Element' %}">
+                        <span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+                        <span class="title">Element</span>
+                    </a>
+                </li>
+                <li>
+                  <a href="{% url 'composant' %}">
+                    <span class="icon"><ion-icon name="apps-outline"></ion-icon></span>
+                    <span class="title">Composant</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'SignOut' %}">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+      
+        <div class="main active">
+            <br><br><br>
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+                <div class="search">
+                    <label>
+                        
+                    </label>
+                </div>
+                <div class="user">
+                    <img src="{% static 'img/logoKitchen.jpg' %}" alt="">
+                </div>
+            </div>
+
+                <div class="cardBox">
+                    <div class="card">
+                        <div>
+                        <div class="numbers">{{NembreComposant}}</div>
+                            <div class="cardName">Composant dans le Stock</div>
+                        </div>
+                        <div class="iconBx">
+                            <ion-icon name="basket"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="ListComp">
+                        <span>List Des Composant au seuil</span>
+                        <ul>
+                        {%for c in Composantoseuil%}
+                            <li class="List">
+                                <label class="ListElement">- {{c.Nom}} {{c.quantite}}</label>
+                                <a class="LinkComposant" href="{% url 'composant' c.id %}"><ion-icon name="pencil-outline"></ion-icon></a>
+                                <a class="LinkComposant" href="{% url 'composantD' c.id %}"><ion-icon name="trash-outline"></ion-icon></a>
+                            </li>
+                        {%endfor%}
+                        </ul>
+                    </div>
+                </div>
+            <div class="m-auto w-75">
+                <div class="recentOrders">
+                    <div class="cardHeader d-flex justify-content-between">
+                        <h2>Stock des composants</h2>     
+                        <button type="button" class="btn btn-primary h4" data-toggle="modal" data-target="#composantForm">
+                            <ion-icon class="h2 m-auto" name="add-circle-outline"></ion-icon>
+                        </button>                               
+                    </div>
+                    <table id="Composants" class="tableElement table">
+                          <thead>
+                              <tr>
+                                  <th>Nom</th>
+                                  <th>Prix d'achat</th>
+                                  <th>quantite</th>
+                                  <th>seuil</th>
+                                  <th>Langeur</th>
+                                  <th>Largeur</th>
+                                  <th></th>
+                              </tr>
+                          </thead>   
+                        <tbody>
+                            {%for c in composant%}
+                            <tr>
+                               <td class="NomCompTable">{{c.Nom}}</td>
+                                <td>{{c.Prix_achat}}</td>
+                                <td>{{c.quantite}}</td>
+                                <td>{{c.seuil}}</td>
+                                <td>{{ c.Langeur|default:"----" }}</td>
+                                <td>{{ c.Largeur|default:"----" }}</td>
+                                <td class="tablefnc">
+                                <a class="LinkComposant" href="{% url 'composant' c.id %}"><ion-icon name="pencil-outline"></ion-icon></a>
+                                <a class="LinkComposant" href="{% url 'composantD' c.id %}"><ion-icon name="trash-outline"></ion-icon></a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        </tbody> 
+                    </table> 
+                </div>
+            </div>
+
+            {% if selectedComposant %}
+            <div class="modal fade" id="EditcomposantForm"data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="composantFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="addComposantForm">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">modifier Composant</h5>
+                          <a href="{% url 'composant' %}"><ion-icon class="h4 text-light" name="close-outline"></ion-icon></a>
+                        </div>
+                        {% csrf_token %}
+                        <p>
+                          <label for="{{ selectedComposant.Nom.id_for_label }}">Nom:</label>
+                          {{ selectedComposant.Nom }}
+                        </p>
+                        <div class="d-flex">
+                          <p>
+                            <label for="{{ selectedComposant.Prix_achat.id_for_label }}">Prix d'achat:</label>
+                            {{ selectedComposant.Prix_achat }}
+                          </p>
+                        </div>
+                        <span class="m-2">Prix par DA</span>
+                        <div class="d-flex">
+                          <p>
+                            <label for="{{ selectedComposant.quantite.id_for_label }}">Quantite:</label>
+                            {{ selectedComposant.quantite }}
+                          </p>
+                          <p>
+                            <label for="{{ selectedComposant.seuil.id_for_label }}">Seuil:</label>
+                            {{ selectedComposant.seuil }}
+                          </p>
+                        </div>
+                        <span class="m-2">Quantite & Seuil par piece</span>
+                        <div class="d-flex ">
+                            <input type="checkbox" class="m-1" name="destenceCheck" id="destenceCheck" {% if selectedComposant.Langeur and selectedComposant.Largeur %}checked{% endif %}>
+                            <label class="m-1">Utilise les dimensions</label>
+                        </div>
+                        <div id="Fromdestence" >
+                            <div class="d-flex">
+                            <p>
+                              <label for="{{ selectedComposant.Langeur.id_for_label }}">Langeur:</label>
+                              {{ selectedComposant.Langeur }}
+                            </p>
+                            <p>
+                              <label for="{{ selectedComposant.Largeur.id_for_label }}">Largeur:</label>
+                              {{ selectedComposant.Largeur }}
+                            </p>
+                          </div>
+                          <span class="m-2">L'unité de longueur et de largeur est le cm (pas obligatoire)</span>
+                        </div>
+                        <p>{{message}}</p>
+                        <div class="modal-footer">
+                            <a href="{% url 'composant' %}" class="Formbtn m-2" >
+                                Cancel
+                            </a>
+                          <button class="Formbtn" type="submit">Modifier</button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(window).on('load', function() {
+                    $('#EditcomposantForm').modal('show');
+                });
+            </script>
+            {% elif DeletedInst %}
+            <div class="modal fade" id="DeletecomposantForm"data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="composantFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="addComposantForm">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un composant</h5>
+                        </div>
+                        <span class="h5 m-4">ete vous sur vous voulez supprime <span class="selectedtext">{{DeletedInst.Nom}}</span>?</span>
+                        <div class="d-flex">
+                            <a href="{% url 'composant' %}" class="Formbtn m-2" >
+                                Cancel
+                            </a>
+                            <button type="submit" class="Formbtn m-2">
+                                Oui
+                            </button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(window).on('load', function() {
+                    $('#DeletecomposantForm').modal('show');
+                });
+            </script>
+            {% else %}
+            <div class="modal fade" id="composantForm" tabindex="-1" role="dialog" aria-labelledby="composantFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="addComposantForm">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un composant</h5>
+                        <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                            <ion-icon class="h4 text-light" name="close-outline"></ion-icon>
+                        </button>
+                        </div>
+                        {% csrf_token %}
+                        <p>
+                        <label for="{{ formcomposant.Nom.id_for_label }}">Nom:</label>
+                        {{ formcomposant.Nom }}
+                        </p>
+                        <div class="d-flex">
+                        <p>
+                            <label for="{{ formcomposant.Prix_achat.id_for_label }}">Prix d'achat:</label>
+                            {{ formcomposant.Prix_achat }}
+                        </p>
+                        </div>
+                        <span class="m-2">Prix par DA</span>
+                        <div class="d-flex">
+                        <p>
+                            <label for="{{ formcomposant.quantite.id_for_label }}">Quantite:</label>
+                            {{ formcomposant.quantite }}
+                        </p>
+                        <p>
+                            <label for="{{ formcomposant.seuil.id_for_label }}">Seuil:</label>
+                            {{ formcomposant.seuil }}
+                        </p>
+                        </div>
+                        <span class="m-2">Quantite & Seuil par piece</span>
+                        <div class="d-flex ">
+                        <input type="checkbox" class="m-1" name="destenceCheck" id="destenceCheck">
+                        <label class="m-1">Utilise les dimensions</label>
+                        </div>
+                        <div id="Fromdestence">
+                        <div class="d-flex">
+                            <p>
+                            <label for="{{ formcomposant.Langeur.id_for_label }}">Langeur:</label>
+                            {{ formcomposant.Langeur }}
+                            </p>
+                            <p>
+                            <label for="{{ formcomposant.Largeur.id_for_label }}">Largeur:</label>
+                            {{ formcomposant.Largeur }}
+                            </p>
+                        </div>
+                        <span class="m-2">L'unité de longueur et de largeur est le cm</span>
+                        </div>
+                        <p>{{message}}</p>
+                        <div class="modal-footer">
+                        <button class="Formbtn" type="submit">Ajouter</button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+        {% endif %}
+	<script src="{% static 'js/composant.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+
+<script>
+    // add hovered class to selected list item
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("mouseover", activeLink));
+
+// Menu Toggle
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+$(document).ready(function () {
+    $('#Composants').DataTable();
+    $('#ttt').DataTable();
+});
+
+    </script>
+</html>

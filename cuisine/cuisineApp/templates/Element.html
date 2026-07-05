@@ -1,0 +1,434 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" >
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <title> Cuisine </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<style>
+ 
+    </style>
+<body>
+    <!-- =============== Navigation ================ -->
+    
+    <div class="In">
+        <div class="navigation active">
+            <ul>
+                <br><br><br>
+                <li>
+                  <a href="{% url 'main' %}">
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Commande' %}">
+                        <span class="icon"><ion-icon name="cart"></ion-icon></span>
+                        <span class="title">Commande</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Cuisine' %}">
+                        <span class="icon"><ion-icon name="bag-handle-outline"></ion-icon></span>
+                        <span class="title">Cuisine</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Element' %}">
+                        <span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+                        <span class="title">Element</span>
+                    </a>
+                </li>
+                <li>
+                  <a href="{% url 'composant' %}">
+                    <span class="icon"><ion-icon name="apps-outline"></ion-icon></span>
+                    <span class="title">Composant</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'SignOut' %}">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+      
+        <div class="main active">
+            <br><br><br>
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+                <div class="search">
+                    <label>
+                        
+                    </label>
+                </div>
+                <div class="user">
+                    <img src="{% static 'img/logoKitchen.jpg' %}" alt="">
+                </div>
+            </div>
+
+                <div class="cardBox">
+                    <div class="card">
+                        <div>
+                        <div class="numbers">{{NembreElement}}</div>
+                            <div class="cardName">Nombre de Element</div>
+                        </div>
+                        <div class="iconBx">
+                            <ion-icon name="file-tray-full-outline"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="ListComp">
+                        <span>List Des Element au seuil</span>
+                        <ul>
+                        {%for c in Elementseuil%}
+                            <li class="List">
+                                <label class="ListElement">- {{c.Nom}} {{c.quantite}}</label>
+                                <a class="LinkComposant" href="{% url 'Element' c.id %}"><ion-icon name="pencil-outline"></ion-icon></a>
+                                <a class="LinkComposant" href="{% url 'ElementD' c.id %}"><ion-icon name="trash-outline"></ion-icon></a>
+                            </li>
+                        {%endfor%}
+                        </ul>
+                    </div>
+                </div>
+            <div class="m-auto w-75">
+                <div class="recentOrders">
+                    <div class="cardHeader d-flex justify-content-between">
+                        <h2>Les Elements</h2>     
+                        <button type="button" class="btn btn-primary h4" data-toggle="modal" data-target="#ElementForm">
+                            <ion-icon class="h2 m-auto" name="add-circle-outline"></ion-icon>
+                        </button>                               
+                    </div>
+                    <table id="Elements" class="tableElement table">
+                          <thead>
+                              <tr>
+                                  <th>référence</th>
+                                  <th>Nom</th>
+                                  <th>Prix d'achat</th>
+                                  <th>Prix de vente</th>
+                                  <th>type</th>
+                                  <th>quantite</th>
+                                  <th>seuil</th>
+                                  <th></th>
+                              </tr>
+                          </thead>   
+                        <tbody>
+                            {%for c in Elements%}
+                            <tr>
+                                <td class="NomCompTable w-auto">{{c.id}}</td>
+                               <td class="NomCompTable">{{c.Nom}}</td>
+                               <td>{{ c.Prix_achat|default:"----" }}</td>
+                                <td>{{c.Prix_vente|default:"----"}}</td>
+                                <td>{{ c.type }}</td>
+                                <td>{{c.quantite}}</td>
+                                <td>{{c.seuil}}</td>
+                                <td class="tablefnc">
+                                <a class="LinkElement" href="{% url 'Element' c.id %}"><ion-icon name="pencil-outline"></ion-icon></a>
+                                <a class="LinkElement" href="{% url 'ElementD' c.id %}"><ion-icon name="trash-outline"></ion-icon></a>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        </tbody> 
+                    </table> 
+                </div>
+            </div>
+
+            {% if selectedElement %}
+            <div class="modal fade" id="EditElementForm"data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="ElementFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <input type="text" id="Function" value="2" class="d-none">
+                    <form method="POST" class="modal-content" id="addElementForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Madefie une Element</h5>
+                            <a href="{% url 'Element' %}" class="btn m-2" >
+                                <ion-icon class="h4 text-light" name="close-outline"></ion-icon>
+                            </a>
+                        </div>
+                        {% csrf_token %}
+                        <p>
+                            <label for="{{ selectedElement.Nom.id_for_label }}">Nom:</label>
+                            {{ selectedElement.Nom }}
+                        </p>
+                        <br>
+                            <p>
+                                <label for="{{ selectedElement.Prix_achat.id_for_label }}">Prix d'Achat:</label>
+                                {{ selectedElement.Prix_achat }}
+                            </p>
+                            <p>
+                                <label for="{{ selectedElement.Prix_vente.id_for_label }}">Prix Prix de vente:</label>
+                                {{ selectedElement.Prix_vente }}
+                            </p>
+                            <p>
+                                <label for="{{ selectedElement.quantite.id_for_label }}">Quantite:</label>
+                                {{ selectedElement.quantite }}
+                            </p>
+                            <p>
+                                <label for="{{ formElement.seuil.id_for_label }}">Seuil:</label>
+                                {{ selectedElement.seuil }}
+                            </p>
+                            <p>
+                                <label for="{{ selectedElement.type.id_for_label }}">Type:</label>
+                                {{ selectedElement.type }}
+                            </p>
+                        <div id='composantes'>
+                            <div class="d-flex">
+                                <h4>les composant associés à l'Élément:</h4>
+                                <button class="Formbtn p-1 m-1 h4 text-dark" type="button" id="add-row-btn"><ion-icon name="add-outline"></ion-icon></button>
+                            </div>
+                            <table id="composnat-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Element</th>
+                                        <th >Quantite/langeur Largeur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for form in Formset %}
+                                    <tr>
+                                        <td class="p-2 h4"> - </td>
+                                        <td>{{ form.composant }}</td>
+                                        <td class="w-50">{{ form.Quantite }}
+                                            <input type="number" name="Langeur" step="any" placeholder="langeur cm" class="input-langeur w-100 p-1"required="">
+                                            <input type="number" name="Largeur" step="any" placeholder="Largeur cm" class="input-largeur w-100 p-1"required="">
+                                        </td>
+                                        <td>
+                                            <button type="button" class="Formbtn p-1 m-1 h4 text-dark delete-row-btn"><ion-icon name="trash-outline"></ion-icon></button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="{% url 'Element' %}" class="Formbtn m-2" >
+                                Cancel
+                            </a>
+                          <button class="Formbtn" type="submit">Modifier</button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+            {% if Msg %}
+                <script>
+                    $(document).ready(alert("{{Msg}}"));
+                </script>
+            {%endif%}
+            <script type="text/javascript">
+                $(window).on('load', function() {
+                    $('#EditElementForm').modal('show');
+                });
+            </script>
+
+            {% elif DeletedInst %}
+            <div class="modal fade" id="DeleteElementForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="ElementFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content" id="DeleteForm">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter une Element</h5>
+                        </div>
+                        <span class="h5 m-4">ete vous sur vous voulez supprime <span class="selectedtext">{{DeletedInst.Nom}}</span>?</span>
+                        <div class="d-flex">
+                            <a href="{% url 'Element' %}" class="Formbtn m-2" >
+                                Cancel
+                            </a>
+                            <button type="submit" class="Formbtn m-2">
+                                Oui
+                            </button>
+                        </div>
+                    </form>                      
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(window).on('load', function() {
+                    $('#DeleteElementForm').modal('show');
+                });
+            </script>
+            {% else %}
+            <div class="modal fade" id="ElementForm" tabindex="-1" role="dialog" aria-labelledby="ElementFormTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <input type="text" id="Function" value="1" class="d-none">
+                    <form method="POST" class="modal-content" id="addElementForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Ajouter une Element</h5>
+                            <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                                <ion-icon class="h4 text-light" name="close-outline"></ion-icon>
+                            </button>
+                        </div>
+                        {% csrf_token %}
+                        <p>
+                            <label for="{{ formElement.Nom.id_for_label }}">Nom:</label>
+                            {{ formElement.Nom }}
+                        </p>
+                        <br>
+                        <div class="d-none">
+                            <p>
+                                <label for="{{ formElement.Prix_achat.id_for_label }}">Prix d'Achat:</label>
+                                {{ formElement.Prix_achat }}
+                            </p>
+                        
+                            <p>
+                                <label for="{{ formElement.Prix_vente.id_for_label }}">Prix Prix de vente:</label>
+                                {{ formElement.Prix_vente }}
+                            </p>
+                        </div>
+                            <p>
+                                <label for="{{ formElement.quantite.id_for_label }}">Quantite:</label>
+                                {{ formElement.quantite }}
+                            </p>
+                            <p>
+                                <label for="{{ formElement.seuil.id_for_label }}">Seuil:</label>
+                                {{ formElement.seuil }}
+                            </p>
+                            <p>
+                                <label for="{{ selectedElement.type.id_for_label }}">Type:</label>
+                                {{ formElement.type }}
+                            </p>
+                        <div>
+                        <div id='composantes'>
+                            <div class="d-flex">
+                                <h4>les composant associés à l'Élément:</h4>
+                                <button class="Formbtn p-1 m-1 h4 text-dark" type="button" id="add-row-btn"><ion-icon name="add-outline"></ion-icon></button>
+                            </div>
+                            
+                            <table id="composnat-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="w-25">Element</th>
+                                        <th>Quantite/langeur Largeur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="Formbtn" type="submit">Ajouter</button>
+                        </div>
+                    </form>                    
+                </div>
+            </div>
+        {% endif %}
+    <script>
+    $(document).ready(function () {
+        // Add a row (column) to the table
+        $("#add-row-btn").click(function () {
+            var table = $("#composnat-table").find("tbody");
+            var newRow = $("<tr>");
+
+            newRow.append('<td class="p-2 h4"> - </td>');
+            newRow.append(`<td>{{ Formelements.composant }}</td>`);
+            newRow.append(`<td><input type="number" name="Quantite" placeholder="Quantite" step="any" class="input-quantite w-100 p-1" required="">
+                               <input type="number" name="Langeur" placeholder="Langeur cm" step="any" class="input-langeur w-100 p-1" required="">
+                               <input type="number" name="Largeur" placeholder="Largeur cm" step="any" class="input-largeur w-100 p-1" required="">
+                            </td>`);
+            var deleteButton = $('<button type="button" class="Formbtn p-1 m-1 h4 text-dark delete-row-btn"><ion-icon name="trash-outline"></ion-icon></button>');
+            newRow.append($('<td>').append(deleteButton));
+
+            table.append(newRow);
+        });
+        $(document).on("click", ".delete-row-btn", function () {
+            $(this).closest("tr").remove();
+        });
+        let Function=$('#Function').val()
+        $(document).on('click',".composantSelect",function () {
+            var selectedOptionText = $(this).find('option:selected').text();
+            var $container = $(this).parent().parent(); // Find the container that holds the inputs
+            var $quantiteInput = $container.find('.input-quantite');
+            var $langeurInput = $container.find('.input-langeur');
+            var $largeurInput = $container.find('.input-largeur');
+
+            $quantiteInput.add($langeurInput).add($largeurInput).addClass('d-none');
+            $quantiteInput.attr('required', false);
+            $quantiteInput.removeAttr('readonly');
+            $langeurInput.attr('required', false);
+            $largeurInput.attr('required', false);
+            
+            console.log($quantiteInput.prop('outerHTML'));
+            if (selectedOptionText.includes('*')) {
+                $langeurInput.add($largeurInput).removeClass('d-none');
+                if(Function==="1"){
+                    $langeurInput.attr('required', true);
+                    $largeurInput.attr('required', true);
+                }
+                else{
+                    $quantiteInput.removeClass('d-none');
+                    $quantiteInput.attr('readonly', true);
+                }
+            } else {
+                $quantiteInput.removeClass('d-none');
+                $quantiteInput.attr('required', true);
+            }
+        });
+        $('.composantSelect').each(function () {
+            $(this).trigger('click');
+        });
+        function updateTableVisibility() {
+            var selectedType = $('#id_type'); 
+            var table = $('#composantes');
+            console.log(selectedType.val())
+            if (selectedType.val() === 'achetée') {
+            table.addClass('d-none');
+            } else {
+            table.removeClass('d-none');
+            }
+        }
+        updateTableVisibility();
+
+        $('#id_type').change(function () {
+        updateTableVisibility();
+        });
+    });
+    
+
+    </script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+<script>
+    // add hovered class to selected list item
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("mouseover", activeLink));
+
+// Menu Toggle
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+$(document).ready(function () {
+    $('#Elements').DataTable();
+    $('#ttt').DataTable();
+});
+
+    </script>
+</html>
